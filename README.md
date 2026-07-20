@@ -339,7 +339,7 @@ Application provides:
 The deployed Streamlit application provides an interactive interface for uploading images/videos and performing deepfake detection using Vision Transformer.
 
 
-<img src="assets/home.png" width="900">
+<img src="./assets/home.png" width="900">
 
 
 ---
@@ -349,7 +349,7 @@ The deployed Streamlit application provides an interactive interface for uploadi
 The model successfully classifies uploaded facial images and provides prediction probability with confidence score.
 
 
-<img src="assets/prediction.png" width="900">
+<img src="./assets/prediction.png" width="900">
 
 
 ---
