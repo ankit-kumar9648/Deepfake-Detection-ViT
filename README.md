@@ -333,9 +333,31 @@ Application provides:
 
 # 📸 Application Screenshots
 
-(Add screenshots here)
 
-Recommended screenshots:
+## 🏠 Streamlit Application Interface
+
+The deployed Streamlit application provides an interactive interface for uploading images/videos and performing deepfake detection using Vision Transformer.
+
+
+<img src="assets/home.png" width="900">
+
+
+---
+
+## 🤖 Real Image Prediction Result
+
+The model successfully classifies uploaded facial images and provides prediction probability with confidence score.
+
+
+<img src="assets/prediction.png" width="900">
+
+
+---
+
+## 🔍 Explainable AI Visualization
+
+Grad-CAM and Attention Rollout visualization will be added after final integration.
+
 
 ```
 assets/
