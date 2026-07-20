@@ -1,0 +1,41 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+.venv/
+*.egg-info/
+
+# Dataset (too large for version control -- see README for download/setup)
+dataset/train/real/*
+dataset/train/fake/*
+dataset/validation/real/*
+dataset/validation/fake/*
+dataset/test/real/*
+dataset/test/fake/*
+!dataset/**/.gitkeep
+
+# Trained models & large artifacts
+models/*.pth
+models/*.pt
+outputs/checkpoints/*
+outputs/logs/*.log
+outputs/predictions/*
+!outputs/**/.gitkeep
+
+# Streamlit
+.streamlit/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temp files
+*.tmp
+tmp/

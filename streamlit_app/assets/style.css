@@ -1,0 +1,27 @@
+/* style.css -- custom theming for the Deepfake Detection Streamlit app */
+
+.stApp {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+}
+
+section[data-testid="stSidebar"] {
+    border-right: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+div[data-testid="stFileUploader"] {
+    border: 1px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+}
+
+.stProgress > div > div > div {
+    background-image: linear-gradient(90deg, #2ecc71, #27ae60);
+}
+
+div[data-testid="stMetricValue"] {
+    font-size: 1.6rem;
+}
