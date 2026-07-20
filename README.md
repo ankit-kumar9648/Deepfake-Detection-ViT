@@ -9,111 +9,383 @@
 
 </p>
 
-
 <p align="center">
-A complete Deep Learning pipeline for detecting AI-generated and manipulated faces using a fine-tuned Vision Transformer (ViT-B/16).
+An end-to-end Deep Learning system for detecting AI-generated and manipulated facial images using Vision Transformer (ViT-B/16).
 </p>
-
 
 ---
 
 # 📌 Project Overview
 
-Deepfake technology has become one of the biggest challenges in digital media authenticity. 
-This project focuses on developing an intelligent deepfake detection system capable of classifying facial images into:
+Deepfake technology has created serious challenges in digital security, media authenticity, and online trust. This project develops an intelligent deepfake detection system that classifies facial images into:
 
-- ✅ Real Images
-- ❌ Fake / AI Generated Images
+* ✅ Real Images
+* ❌ Fake / AI Generated Images
 
+The system uses **Transfer Learning with Vision Transformer (ViT-B/16)** pretrained on ImageNet-21k and fine-tuned for binary image classification.
 
-The system uses **Transfer Learning with Vision Transformer (ViT-B/16)** pretrained on ImageNet-21k and fine-tunes it for binary image classification.
+The complete pipeline includes:
 
-The trained model is deployed using an interactive **Streamlit Web Application** that provides:
-
-- Real/Fake prediction
-- Confidence score
-- Explainable AI visualization
-- Image & Video level analysis
-
+* Data preprocessing
+* Exploratory Data Analysis
+* Model training
+* Performance evaluation
+* Explainable AI visualization
+* Streamlit deployment
 
 ---
 
 # 🎯 Objectives
 
-✔ Build an accurate Real vs Fake image classifier using Transformer architecture.
-
-✔ Implement a complete ML pipeline from data preprocessing to deployment.
-
-✔ Apply Explainable AI techniques for model interpretation.
-
-✔ Create a production-ready modular deep learning project.
-
-✔ Provide an interactive user interface for end users.
-
+* Develop a Real vs Fake image classification model using Vision Transformer.
+* Build a complete and reproducible deep learning workflow.
+* Apply Explainable AI techniques to understand model decisions.
+* Create an interactive web application for prediction.
+* Design a professional GitHub-ready AI project.
 
 ---
 
-# ✨ Key Features
-
+# ✨ Features
 
 ## 🤖 Deep Learning Model
 
-- Vision Transformer (ViT-B/16)
-- Transfer Learning approach
-- Custom classification head
-- Frozen backbone + optional fine tuning
-- AdamW optimizer
-- Cosine learning rate scheduling
+* Vision Transformer (ViT-B/16)
+* Transfer learning approach
+* Pretrained ImageNet-21k weights
+* Custom classification head
+* Backbone freezing and fine-tuning support
+* AdamW optimizer
+* Cosine learning rate scheduler
 
+## 📊 Data Analysis
 
-## 📊 Data Analysis & Processing
+Implemented complete EDA pipeline:
 
-- Dataset visualization
-- Class distribution analysis
-- Image resolution analysis
-- Pixel intensity analysis
-- Data augmentation pipeline
-
+* Class distribution analysis
+* Image sample visualization
+* Resolution analysis
+* Pixel intensity analysis
+* Data augmentation techniques
 
 ## 📈 Model Evaluation
 
-Evaluation metrics:
+Performance evaluation using:
 
-- Accuracy
-- Precision
-- Recall
-- F1 Score
-- ROC-AUC Score
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+* ROC-AUC Score
 
+Generated visual reports:
 
-Visualization:
+* Confusion Matrix
+* ROC Curve
+* Precision-Recall Curve
+* Training and Validation Curves
 
-- Confusion Matrix
-- ROC Curve
-- Precision Recall Curve
-- Training & Validation Loss
+## 🔍 Explainable AI (XAI)
 
+The model provides interpretability using:
 
-## 🔍 Explainable AI
-
-To understand model decisions:
-
-- Grad-CAM Heatmaps
-- Attention Rollout Visualization
-
+* Grad-CAM visualization
+* Attention Rollout
 
 ## 🌐 Streamlit Application
 
-Features:
+Interactive web interface with:
 
-- Drag & Drop image upload
-- Real/Fake prediction
-- Confidence probability
-- Visual explanation
-- Video frame analysis
-
+* Image upload
+* Real/Fake prediction
+* Confidence score
+* Probability visualization
+* Explainability heatmaps
+* Video frame analysis support
 
 ---
 
 # 🏗️ System Architecture
 
+```
+Input Image / Video
+          |
+          ↓
+ Image Preprocessing
+          |
+          ↓
+ Data Augmentation
+          |
+          ↓
+ Vision Transformer
+       (ViT-B/16)
+          |
+          ↓
+ Classification Head
+          |
+          ↓
+ Real / Fake Prediction
+          |
+          ↓
+ Explainable AI Output
+```
+
+---
+
+# 📂 Project Structure
+
+```
+Deepfake-Detection-ViT/
+
+│
+├── dataset/
+│   ├── train/
+│   ├── validation/
+│   └── test/
+│
+├── notebooks/
+│   └── Deepfake_Detection_ViT.ipynb
+│
+├── src/
+│   ├── dataset.py
+│   ├── model.py
+│   ├── metrics.py
+│   ├── eda.py
+│   ├── gradcam.py
+│   └── video_utils.py
+│
+├── models/
+│   └── best_model.pth
+│
+├── outputs/
+│   ├── plots/
+│   ├── logs/
+│   └── predictions/
+│
+├── reports/
+│   ├── Project_Report.docx
+│   └── Project_Presentation.pptx
+│
+├── train.py
+├── test.py
+├── predict.py
+├── app.py
+├── config.py
+├── requirements.txt
+└── README.md
+
+```
+
+---
+
+# ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ankit-kumar9648/Deepfake-Detection-ViT.git
+```
+
+Navigate to project directory:
+
+```bash
+cd Deepfake-Detection-ViT
+```
+
+Create virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate environment:
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# 📁 Dataset Structure
+
+Dataset should follow ImageFolder format:
+
+```
+dataset/
+
+├── train/
+│   ├── real/
+│   └── fake/
+│
+├── validation/
+│   ├── real/
+│   └── fake/
+│
+└── test/
+    ├── real/
+    └── fake/
+
+```
+
+Supported datasets:
+
+* FaceForensics++
+* Celeb-DF
+* DFDC
+* Real and Fake Face Dataset
+
+---
+
+# 🚀 Model Training
+
+Train the model:
+
+```bash
+python train.py
+```
+
+Custom training:
+
+```bash
+python train.py --epochs 15 --batch-size 16 --lr 3e-4
+```
+
+Generated model files:
+
+```
+models/
+
+├── best_model.pth
+└── last_model.pth
+
+```
+
+---
+
+# 🧪 Model Testing
+
+Run evaluation:
+
+```bash
+python test.py
+```
+
+Generated outputs:
+
+```
+outputs/
+
+├── test_metrics.json
+├── confusion_matrix.png
+├── roc_curve.png
+└── pr_curve.png
+
+```
+
+---
+
+# 🔮 Prediction
+
+For single image prediction:
+
+```bash
+python predict.py --image image.jpg
+```
+
+Example output:
+
+```
+Prediction : Fake
+Confidence : 96.8%
+
+```
+
+---
+
+# 🌐 Run Streamlit Application
+
+Start application:
+
+```bash
+streamlit run app.py
+```
+
+Application provides:
+
+✅ Image upload
+
+✅ Real/Fake classification
+
+✅ Confidence score
+
+✅ Explainable AI visualization
+
+✅ Video frame analysis
+
+---
+
+# 📸 Application Screenshots
+
+(Add screenshots here)
+
+Recommended screenshots:
+
+```
+assets/
+
+├── home.png
+├── prediction.png
+└── gradcam.png
+
+```
+
+---
+
+# 🛠️ Tech Stack
+
+| Category                | Technologies                  |
+| ----------------------- | ----------------------------- |
+| Programming Language    | Python                        |
+| Deep Learning Framework | PyTorch                       |
+| Model Architecture      | Vision Transformer (ViT-B/16) |
+| Computer Vision         | OpenCV, Pillow                |
+| Data Processing         | NumPy, Pandas                 |
+| Visualization           | Matplotlib                    |
+| Machine Learning        | Scikit-learn                  |
+| Explainability          | Grad-CAM                      |
+| Deployment              | Streamlit                     |
+
+---
+
+# 🔮 Future Scope
+
+* Real-time video deepfake detection
+* Video Transformer based models
+* Face detection and alignment using MTCNN
+* Ensemble models (ViT + CNN)
+* FastAPI based deployment
+* Robustness testing against compression and noise
+
+---
+
+# 👨‍💻 Author
+
+## Ankit Kumar
+
+MCA - Data Science & Artificial Intelligence
+
+GitHub:
+https://github.com/ankit-kumar9648
+
+---
+
+# 📜 License
+
+This project is developed for academic and research purposes.
