@@ -40,11 +40,6 @@ def generate_gradcam(
     """
     Compute a Grad-CAM heatmap using gradients of the target class logit
     w.r.t. the last hidden state (patch tokens) of the ViT backbone.
-
-    Returns
-    -------
-    heatmap : np.ndarray, shape (14, 14), values in [0, 1]
-    predicted_class : int
     """
     model.eval()
     pixel_values = pixel_values.to(config.DEVICE).requires_grad_(True)
@@ -58,7 +53,7 @@ def generate_gradcam(
     def bwd_hook(_module, _grad_in, grad_out):
         gradients["value"] = grad_out[0]
 
-    # Hook the last encoder layer's output (pre-final-layernorm hidden state)
+    # Target the last encoder layer inside model.backbone
     if config.MODEL_BACKEND == "torchvision":
         target_layer = model.backbone.encoder.layers[-1]
     else:
@@ -68,7 +63,13 @@ def generate_gradcam(
     handle_bwd = target_layer.register_full_backward_hook(bwd_hook)
 
     try:
-        logits = model(pixel_values)
+        # Call model forward; handle optional attention tuple output
+        out = model(pixel_values)
+        if isinstance(out, (tuple, list)):
+            logits = out[0]
+        else:
+            logits = out
+
         if target_class is None:
             target_class = int(torch.argmax(logits, dim=1).item())
 
@@ -104,14 +105,6 @@ def generate_gradcam(
 def generate_attention_rollout(attentions) -> np.ndarray:
     """
     Attention rollout across all encoder layers (Abnar & Zuidema, 2020).
-
-    Parameters
-    ----------
-    attentions : tuple of tensors, each (1, num_heads, tokens, tokens)
-
-    Returns
-    -------
-    heatmap : np.ndarray, shape (14, 14)
     """
     with torch.no_grad():
         result = torch.eye(attentions[0].shape[-1]).to(attentions[0].device)

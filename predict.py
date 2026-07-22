@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import argparse
 from functools import lru_cache
-from typing import Dict
+from typing import Dict, Union
 
 import torch
 import torch.nn.functional as F
@@ -33,8 +33,9 @@ def load_model(checkpoint_path: str = config.BEST_MODEL_PATH) -> torch.nn.Module
     checkpoint = load_checkpoint(checkpoint_path)
     model = build_model()
     model.load_state_dict(checkpoint["model_state_dict"])
+    model.to(config.DEVICE)
     model.eval()
-    logger.info(f"Model loaded from '{checkpoint_path}' (epoch {checkpoint.get('epoch')}).")
+    logger.info(f"Model loaded from '{checkpoint_path}' (epoch {checkpoint.get('epoch', 'N/A')}).")
     return model
 
 
@@ -43,6 +44,15 @@ def preprocess_image(image: Image.Image) -> torch.Tensor:
     transform = build_eval_transforms()
     tensor = transform(image.convert("RGB")).unsqueeze(0)
     return tensor.to(config.DEVICE)
+
+
+def extract_logits(output: Union[torch.Tensor, tuple, object]) -> torch.Tensor:
+    """Safely extracts logits tensor from raw model outputs or HuggingFace SequenceClassifierOutput."""
+    if hasattr(output, "logits"):
+        return output.logits
+    elif isinstance(output, (tuple, list)):
+        return output[0]
+    return output
 
 
 @torch.no_grad()
@@ -57,7 +67,9 @@ def predict_image(image: Image.Image, checkpoint_path: str = config.BEST_MODEL_P
     model = load_model(checkpoint_path)
     tensor = preprocess_image(image)
 
-    logits = model(tensor)
+    raw_output = model(tensor)
+    logits = extract_logits(raw_output)
+
     probs = F.softmax(logits, dim=1)[0].cpu()
 
     pred_idx = int(torch.argmax(probs).item())
@@ -84,9 +96,9 @@ def main() -> None:
     result = predict_image(image, checkpoint_path=args.checkpoint)
 
     print("\n" + "=" * 40)
-    print(f"Image      : {args.image}")
-    print(f"Prediction : {result['label'].upper()}")
-    print(f"Confidence : {result['confidence'] * 100:.2f}%")
+    print(f"Image       : {args.image}")
+    print(f"Prediction  : {result['label'].upper()}")
+    print(f"Confidence  : {result['confidence'] * 100:.2f}%")
     print(f"Probabilities : real={result['probabilities']['real']:.4f} | "
           f"fake={result['probabilities']['fake']:.4f}")
     print("=" * 40 + "\n")
