@@ -8,15 +8,15 @@ CLI usage
 ---------
     python predict.py --image path/to/image.jpg
 """
-import os
-from huggingface_hub import hf_hub_download
 
 from __future__ import annotations
 
+import os
 import argparse
 from functools import lru_cache
 from typing import Dict, Union
 
+from huggingface_hub import hf_hub_download
 import torch
 import torch.nn.functional as F
 from PIL import Image
@@ -53,14 +53,12 @@ def load_model(checkpoint_path=None):
 
 
 def preprocess_image(image: Image.Image) -> torch.Tensor:
-    """Apply the deterministic eval transform and add a batch dimension."""
     transform = build_eval_transforms()
     tensor = transform(image.convert("RGB")).unsqueeze(0)
     return tensor.to(config.DEVICE)
 
 
 def extract_logits(output: Union[torch.Tensor, tuple, object]) -> torch.Tensor:
-    """Safely extracts logits tensor from raw model outputs or HuggingFace SequenceClassifierOutput."""
     if hasattr(output, "logits"):
         return output.logits
     elif isinstance(output, (tuple, list)):
@@ -70,13 +68,6 @@ def extract_logits(output: Union[torch.Tensor, tuple, object]) -> torch.Tensor:
 
 @torch.no_grad()
 def predict_image(image: Image.Image, checkpoint_path: str = config.BEST_MODEL_PATH) -> Dict:
-    """
-    Run inference on a single PIL image.
-
-    Returns
-    -------
-    dict with keys: label, confidence, probabilities ({'real': p, 'fake': p})
-    """
     model = load_model(checkpoint_path)
     tensor = preprocess_image(image)
 
@@ -90,15 +81,20 @@ def predict_image(image: Image.Image, checkpoint_path: str = config.BEST_MODEL_P
     confidence = float(probs[pred_idx].item())
 
     probabilities = {
-        config.IDX_TO_CLASS[i]: float(probs[i].item()) for i in range(config.NUM_CLASSES)
+        config.IDX_TO_CLASS[i]: float(probs[i].item())
+        for i in range(config.NUM_CLASSES)
     }
 
-    return {"label": label, "confidence": confidence, "probabilities": probabilities}
+    return {
+        "label": label,
+        "confidence": confidence,
+        "probabilities": probabilities,
+    }
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Predict real/fake for a single image.")
-    parser.add_argument("--image", type=str, required=True, help="Path to an image file.")
+    parser.add_argument("--image", type=str, required=True)
     parser.add_argument("--checkpoint", type=str, default=config.BEST_MODEL_PATH)
     return parser.parse_args()
 
@@ -108,13 +104,15 @@ def main() -> None:
     image = Image.open(args.image)
     result = predict_image(image, checkpoint_path=args.checkpoint)
 
-    print("\n" + "=" * 40)
+    print("=" * 40)
     print(f"Image       : {args.image}")
     print(f"Prediction  : {result['label'].upper()}")
     print(f"Confidence  : {result['confidence'] * 100:.2f}%")
-    print(f"Probabilities : real={result['probabilities']['real']:.4f} | "
-          f"fake={result['probabilities']['fake']:.4f}")
-    print("=" * 40 + "\n")
+    print(
+        f"Probabilities : real={result['probabilities']['real']:.4f} | "
+        f"fake={result['probabilities']['fake']:.4f}"
+    )
+    print("=" * 40)
 
 
 if __name__ == "__main__":
