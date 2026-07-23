@@ -8,6 +8,8 @@ CLI usage
 ---------
     python predict.py --image path/to/image.jpg
 """
+import os
+from huggingface_hub import hf_hub_download
 
 from __future__ import annotations
 
@@ -28,14 +30,25 @@ logger = get_logger(__name__)
 
 
 @lru_cache(maxsize=1)
-def load_model(checkpoint_path: str = config.BEST_MODEL_PATH) -> torch.nn.Module:
-    """Load (and cache) the trained model for inference."""
+def load_model(checkpoint_path=None):
+    """Load model locally or download from Hugging Face."""
+
+    if checkpoint_path is None:
+        if os.path.exists(config.BEST_MODEL_PATH):
+            checkpoint_path = config.BEST_MODEL_PATH
+        else:
+            checkpoint_path = hf_hub_download(
+                repo_id="ankit-321/deepfake-vit-model",
+                filename="best_model.pth"
+            )
+
     checkpoint = load_checkpoint(checkpoint_path)
+
     model = build_model()
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(config.DEVICE)
     model.eval()
-    logger.info(f"Model loaded from '{checkpoint_path}' (epoch {checkpoint.get('epoch', 'N/A')}).")
+
     return model
 
 
