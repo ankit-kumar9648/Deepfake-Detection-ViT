@@ -58,11 +58,18 @@ load_css()
 # --------------------------------------------------------------------------- #
 # Cached model loading
 # --------------------------------------------------------------------------- #
-@st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner=True)
 def get_cached_model():
-    if not os.path.exists(config.BEST_MODEL_PATH):
+    """
+    Loads the model.
+    If models/best_model.pth is not found locally,
+    predict.py will automatically download it from Hugging Face.
+    """
+    try:
+        return load_model()
+    except Exception as e:
+        st.error(f"Model loading failed:\n{e}")
         return None
-    return load_model(config.BEST_MODEL_PATH)
 
 
 # --------------------------------------------------------------------------- #
@@ -111,17 +118,16 @@ kpi2.metric(label="Inference Device", value=str(config.DEVICE).upper())
 kpi3.metric(label="Backend", value=str(config.MODEL_BACKEND).capitalize())
 kpi4.metric(
     label="Checkpoint Status",
-    value="Ready" if os.path.exists(config.BEST_MODEL_PATH) else "Missing",
+    value="Loading..."
 )
 
 st.divider()
 
-model = get_cached_model()
+with st.spinner("Loading Vision Transformer model..."):
+    model = get_cached_model()
+
 if model is None:
-    st.warning(
-        f"⚠️ No trained checkpoint found at `{config.BEST_MODEL_PATH}`. "
-        f"Populate `dataset/` and run `python train.py` first, then restart this app."
-    )
+    st.error("❌ Failed to load the model from Hugging Face.")
     st.stop()
 
 
@@ -203,7 +209,7 @@ def render_explainability(image: Image.Image, target_class: int) -> None:
                         )
             except Exception as exc:
                 st.info(f"Attention rollout unavailable: {exc}")
-                
+
 # --------------------------------------------------------------------------- #
 # Image mode
 # --------------------------------------------------------------------------- #
